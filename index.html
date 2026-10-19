@@ -138,6 +138,10 @@ textarea{min-height:110px;resize:vertical}
 .note{font-size:.85rem;color:var(--ink-500);margin:0}
 .contact-side{display:grid;gap:16px;align-content:start}
 .contact-side .card{padding:20px}
+.hp{position:absolute;left:-9999px;opacity:0;height:0;width:0}
+.btn[disabled]{opacity:.65;cursor:wait}
+.thanks{text-align:center;padding:30px 10px}
+.thanks .tick{width:56px;height:56px;border-radius:50%;background:#e7f6ee;color:#14633a;display:grid;place-items:center;margin:0 auto 14px;font-size:1.6rem}
 
 footer.site{background:var(--navy-950);color:#9fb0c8;padding:40px 0;font-size:.9rem}
 .foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;align-items:center}
@@ -400,7 +404,7 @@ footer.site{background:var(--navy-950);color:#9fb0c8;padding:40px 0;font-size:.9
       <div>
         <span class="eyebrow" style="color:var(--blue-700)">Get in touch</span>
         <h2>Request a demo</h2>
-        <p style="color:var(--ink-700)">Tell us a little about your business and we will come back to you. The form opens your email program with your message ready to send.</p>
+        <p style="color:var(--ink-700)">Tell us a little about your business. We will reply by email, usually within one working day, to arrange a walk-through.</p>
         <div class="contact-side">
           <div class="card"><h3>Email</h3><p><a href="mailto:floxadmin@floxintegrations.co.za" data-email>floxadmin@floxintegrations.co.za</a></p></div>
         </div>
@@ -422,8 +426,9 @@ footer.site{background:var(--navy-950);color:#9fb0c8;padding:40px 0;font-size:.9
           </select>
         </label>
         <label>Message<textarea name="message" placeholder="What would you like to manage better?"></textarea></label>
-        <button class="btn btn-primary" type="submit">Prepare my email</button>
-        <p class="note" id="formNote" role="status"></p>
+        <input class="hp" type="text" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <button class="btn btn-primary" type="submit" id="sendBtn">Send request</button>
+        <p class="note" id="formNote" role="status">We only use your details to reply to this request.</p>
       </form>
     </div>
   </div>
@@ -454,20 +459,27 @@ menuBtn.addEventListener("click", function () {
 });
 navLinks.addEventListener("click", function (e) { if (e.target.tagName === "A") { navLinks.classList.remove("open"); menuBtn.setAttribute("aria-expanded", "false"); } });
 
+// The request goes to the Flo X app, which emails it to CONTACT_EMAIL.
+var DEMO_ENDPOINT = LOGIN_URL + "/api/v1/public/demo-request";
 document.getElementById("contactForm").addEventListener("submit", function (e) {
   e.preventDefault();
-  var f = e.target, note = document.getElementById("formNote");
+  var f = e.target, note = document.getElementById("formNote"), btn = document.getElementById("sendBtn");
   if (!f.name.value.trim() || !/^\S+@\S+\.\S+$/.test(f.email.value.trim())) {
     note.textContent = "Please enter your name and a valid email address.";
     return;
   }
-  var body = "Name: " + f.name.value.trim() + "\n" +
-             "Company: " + f.company.value.trim() + "\n" +
-             "Email: " + f.email.value.trim() + "\n" +
-             "Phone: " + f.phone.value.trim() + "\n" +
-             "Business type: " + f.type.value + "\n\n" + f.message.value.trim();
-  window.location.href = "mailto:" + CONTACT_EMAIL + "?subject=" + encodeURIComponent("Flo X demo request – " + (f.company.value.trim() || f.name.value.trim())) + "&body=" + encodeURIComponent(body);
-  note.textContent = "Your email program should open with the message ready. If it does not, email " + CONTACT_EMAIL + " directly.";
+  var payload = { name: f.name.value.trim(), company: f.company.value.trim(), email: f.email.value.trim(), phone: f.phone.value.trim(),
+                  business_type: f.type.value, message: f.message.value.trim(), botcheck: f.botcheck.value };
+  btn.disabled = true; btn.textContent = "Sending…";
+  fetch(DEMO_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) })
+    .then(function (r) { if (!r.ok) { return r.json().catch(function () { return {}; }).then(function (b) { var m = b && b.error && b.error.message; throw new Error(m || "send failed"); }); } return r.json(); })
+    .then(function () {
+      f.innerHTML = '<div class="thanks" role="status"><div class="tick">&#10003;</div><h3>Thank you \u2013 request sent</h3><p class="note">We will reply to the email address you gave us.</p></div>';
+    })
+    .catch(function (err) {
+      note.textContent = (err && err.message && err.message !== "send failed" && err.message !== "Failed to fetch") ? err.message : "Sorry, that did not send. Please email " + CONTACT_EMAIL + " directly.";
+      btn.disabled = false; btn.textContent = "Send request";
+    });
 });
 </script>
 </body>
