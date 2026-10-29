@@ -41,6 +41,11 @@ p{margin:0 0 1em}
 .btn-ghost:hover{background:rgba(255,255,255,.08)}
 .btn-gold{background:var(--gold-500);color:var(--navy-950)}
 .btn-gold:hover{background:#e2b94e}
+.btn-demo{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.35)}
+.btn-demo:hover{background:rgba(255,255,255,.18)}
+.btn-demo .dot,.demo-card .dot{width:8px;height:8px;border-radius:50%;background:#34d399;box-shadow:0 0 0 3px rgba(52,211,153,.25);flex:none}
+.card.demo-card{border-color:var(--gold-500);background:var(--gold-100)}
+.demo-card .btn{margin-top:6px}
 
 /* header */
 header.site{position:sticky;top:0;z-index:50;background:rgba(7,17,31,.92);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.08)}
@@ -184,6 +189,7 @@ footer.site{background:var(--navy-950);color:#9fb0c8;padding:40px 0;font-size:.9
       <a href="#security">Security</a>
       <a href="#faq">FAQ</a>
       <a href="#contact">Contact</a>
+      <a href="https://demo.floxintegrations.co.za" data-demo>Live demo</a>
       <a class="btn btn-primary" href="https://app.floxintegrations.co.za" data-login>Log in</a>
     </nav>
   </div>
@@ -198,9 +204,10 @@ footer.site{background:var(--navy-950);color:#9fb0c8;padding:40px 0;font-size:.9
       <h1>Every job, part and component in one place.</h1>
       <p class="lead">Flo X Integrations is a modular management system. Track jobs from job card to delivery, order parts and RFQs, control stock, follow PEX units and report on what matters — and switch on only the modules your business needs.</p>
       <div class="actions">
-        <a class="btn btn-gold" href="#contact">Request a demo</a>
-        <a class="btn btn-ghost" href="https://app.floxintegrations.co.za" data-login>Log in to Flo X →</a>
+        <a class="btn btn-gold" href="https://demo.floxintegrations.co.za" data-demo>Try the live demo →</a>
+        <a class="btn btn-demo" href="#contact">Request a walk-through</a>
       </div>
+      <p style="color:#9fb0c8;font-size:.9rem;margin:-10px 0 18px">No sign-up needed. Explore a sample workshop as an admin, manager or mechanic. <a href="https://app.floxintegrations.co.za" data-login style="color:#fff">Already a customer? Log in →</a></p>
       <ul class="trust">
         <li>Built for South African workshops</li>
         <li>Each company's data kept separate</li>
@@ -386,6 +393,7 @@ footer.site{background:var(--navy-950);color:#9fb0c8;padding:40px 0;font-size:.9
     <details><summary>Can different staff see different things?</summary><p>Yes. Roles control what each person can do, and individual modules can be switched off for a single user.</p></details>
     <details><summary>Can I bring my existing customers, suppliers and parts?</summary><p>Yes. Customers, suppliers, jobs and parts can be imported from Excel or CSV files, and exported again at any time.</p></details>
     <details><summary>Will it show my company's name and logo?</summary><p>Yes. Your logo and colours are used throughout the system and on printed documents like job cards, delivery notes and pick slips.</p></details>
+    <details><summary>Can I try it before talking to anyone?</summary><p>Yes. Open the <a href="https://demo.floxintegrations.co.za" data-demo>live demo</a> to explore a sample workshop with real-looking jobs, parts and stock. You can switch between roles such as admin, manager and mechanic. Nothing you do there is saved.</p></details>
     <details><summary>Where do I log in?</summary><p>Use the Log in button at the top of this page. If you do not have an account yet, ask your company administrator, or contact us below.</p></details>
     <details><summary>How is pricing worked out?</summary><p>Pricing depends on the modules your company uses. Get in touch and we will put a proposal together.</p></details>
   </div>
@@ -406,6 +414,7 @@ footer.site{background:var(--navy-950);color:#9fb0c8;padding:40px 0;font-size:.9
         <h2>Request a demo</h2>
         <p style="color:var(--ink-700)">Tell us a little about your business. We will reply by email, usually within one working day, to arrange a walk-through.</p>
         <div class="contact-side">
+          <div class="card demo-card" style="margin-bottom:16px"><h3 style="display:flex;align-items:center;gap:8px"><span class="dot"></span>See it live first</h3><p style="margin:0 0 6px">Open the live demo and click around a sample workshop. No sign-up, nothing to install.</p><a class="btn btn-gold" href="https://demo.floxintegrations.co.za" data-demo>Open the live demo →</a></div>
           <div class="card"><h3>Email</h3><p><a href="mailto:sales@floxintegrations.co.za" data-email>sales@floxintegrations.co.za</a></p></div>
         </div>
       </div>
@@ -445,10 +454,13 @@ footer.site{background:var(--navy-950);color:#9fb0c8;padding:40px 0;font-size:.9
 <script>
 // Where the Log in buttons go. Change this one line if the system address changes.
 var LOGIN_URL = "https://app.floxintegrations.co.za";
+// Where the live demo buttons go (view-only demo, no login).
+var DEMO_URL = "https://demo.floxintegrations.co.za";
 // Where the contact form's email is addressed.
 var CONTACT_EMAIL = "sales@floxintegrations.co.za";
 
 document.querySelectorAll("[data-login]").forEach(function (a) { a.href = LOGIN_URL; });
+document.querySelectorAll("[data-demo]").forEach(function (a) { a.href = DEMO_URL; });
 document.querySelectorAll("[data-email]").forEach(function (a) { a.href = "mailto:" + CONTACT_EMAIL; a.textContent = CONTACT_EMAIL; });
 document.getElementById("yr").textContent = new Date().getFullYear();
 
